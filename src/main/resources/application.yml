@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: wantToGram
+  datasource:
+    url: jdbc:mysql://localhost:4444/scheduler2
+    username: user
+    password: password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+bcrypt:
+  work_factor: 12
