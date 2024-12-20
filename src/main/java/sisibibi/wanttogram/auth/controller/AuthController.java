@@ -1,4 +1,4 @@
-package sisibibi.wanttogram.controller;
+package sisibibi.wanttogram.auth.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
