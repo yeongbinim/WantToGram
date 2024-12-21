@@ -43,4 +43,13 @@ public class MemberEntity {
 	@LastModifiedDate
 	@Column(name = "updated_at")
 	private LocalDateTime updatedAt;
+
+	@Column(name = "delete_at")
+	private LocalDateTime deleteAt;
+
+	public MemberEntity(String name, String email, String password) {
+		this.name = name;
+		this.email = email;
+		this.password = password;
+	}
 }
