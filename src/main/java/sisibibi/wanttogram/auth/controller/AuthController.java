@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import sisibibi.wanttogram.auth.domain.MemberCreate;
+import sisibibi.wanttogram.auth.domain.MemberLogin;
 import sisibibi.wanttogram.auth.service.AuthService;
 
 @RestController
@@ -22,8 +23,9 @@ public class AuthController {
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
-	@RequestMapping("/login")
-	public ResponseEntity<Void> login() {
+	@PostMapping("/login")
+	public ResponseEntity<Void> login(@Valid @RequestBody MemberLogin memberLogin) {
+		service.login(memberLogin);
 		return ResponseEntity.ok().build();
 	}
 }
