@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sisibibi.wanttogram.feed.domain.FeedResponseDto;
 import sisibibi.wanttogram.feed.domain.FeedRequestDto;
 import sisibibi.wanttogram.feed.entity.FeedEntity;
@@ -41,12 +42,13 @@ public class FeedService {
         return dtoList;
     }
 
+    @Transactional
     // 피드 업데이트
     public FeedEntity updateFeed(Long id, FeedRequestDto request) {
         FeedEntity feed = feedRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Feed not found"));
         feed.updateFeedDto(request);
-        return feedRepository.save(feed);
+        return feed;
     }
 }
 
