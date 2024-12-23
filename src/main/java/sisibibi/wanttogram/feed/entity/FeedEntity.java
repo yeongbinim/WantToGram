@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import sisibibi.wanttogram.feed.domain.FeedRequestDto;
 import sisibibi.wanttogram.member.entity.MemberEntity;
 
 @Getter
@@ -49,4 +50,12 @@ public class FeedEntity {
 	@LastModifiedDate
 	@Column(name = "updated_at")
 	private LocalDateTime updatedAt;
+
+
+	public void updateFeedDto(FeedRequestDto request) {
+		this.title = request.getTitle();
+		this.content = request.getContent();
+	}
 }
+
+

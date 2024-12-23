@@ -2,6 +2,7 @@ package sisibibi.wanttogram.feed.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import sisibibi.wanttogram.member.entity.MemberEntity;
 
 import java.time.LocalDateTime;
 
@@ -9,7 +10,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class FeedResponseDto {
 
-    private String writer;
+    private String userName;
     private String title;
     private String content;
     private LocalDateTime createdAt;
