@@ -1,7 +1,5 @@
 package sisibibi.wanttogram.feed.controller;
 
-
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +25,6 @@ public class FeedController {
         FeedEntity feed = feedService.createFeed(request);
         FeedResponseDto feedResponseDto = new FeedResponseDto(feed.getWriter().getName(), feed.getTitle(), feed.getContent(), feed.getCreatedAt(), feed.getUpdatedAt());
 
-        // return new ResponseEntity<>(feedResponseDto, HttpStatus.OK);
-        //}
         return ResponseEntity.status(HttpStatus.CREATED).body(feedResponseDto);
     }
 }
