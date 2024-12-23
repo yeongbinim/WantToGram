@@ -16,7 +16,7 @@ import sisibibi.wanttogram.member.infrastructure.MemberRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+@Transactional
 @RequiredArgsConstructor
 @Service
 public class FeedService {
@@ -33,6 +33,7 @@ public class FeedService {
 
     }
 
+    @Transactional(readOnly = true)
     public List<FeedResponseDto> findAllFeed() {
         List<FeedEntity> feedList = feedRepository.findAll();
 
@@ -42,13 +43,18 @@ public class FeedService {
         return dtoList;
     }
 
-    @Transactional
+
     // 피드 업데이트
     public FeedEntity updateFeed(Long id, FeedRequestDto request) {
         FeedEntity feed = feedRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Feed not found"));
         feed.updateFeedDto(request);
         return feed;
+    }
+
+    // 피드 삭제
+    public void deleteFeed(Long id) {
+        feedRepository.deleteById(id);
     }
 }
 

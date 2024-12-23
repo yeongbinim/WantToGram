@@ -40,4 +40,10 @@ public class FeedController {
 
         return new ResponseEntity<>(feedResponseDto, HttpStatus.OK);
     }
+
+    @DeleteMapping("/{id}") // 피드 삭제
+    public ResponseEntity<FeedResponseDto> deleteFeed(@PathVariable Long id) {
+        feedService.deleteFeed(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
