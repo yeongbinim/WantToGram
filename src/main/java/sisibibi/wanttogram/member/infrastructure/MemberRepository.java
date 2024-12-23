@@ -15,6 +15,6 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
     // 멤버 id를 이용해서 특정 멤버 조회하기
     default MemberEntity findByIdOrElseThrow(Long id) {
         return findById(id).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id));
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 id의 멤버가 존재하지 않습니다."));
     }
 }

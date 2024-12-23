@@ -2,6 +2,7 @@ package sisibibi.wanttogram.follow.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import sisibibi.wanttogram.follow.entity.FollowEntity;
 
 @Getter
 @RequiredArgsConstructor
