@@ -21,7 +21,7 @@ public class FollowController {
     // 기능
     // ::: 팔로우 추가 API
     @PostMapping("/{member_id}/follows")
-    public ResponseEntity<FollowResponseDto> save(
+    public ResponseEntity<FollowResponseDto> saveFollow(
             @PathVariable Long member_id,
             @RequestParam Long following_id
     ) {
@@ -30,4 +30,17 @@ public class FollowController {
 
         return new ResponseEntity<>(savedFollow, HttpStatus.CREATED);
     }
+
+    // ::: 팔로우 삭제 API
+    @DeleteMapping("/{member_id}/follows/{id}")
+    public ResponseEntity<Void> deleteFollow(
+            @PathVariable Long member_id,
+            @PathVariable Long id
+    ) {
+
+        followService.delete(member_id, id);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }

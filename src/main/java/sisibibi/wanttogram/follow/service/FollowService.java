@@ -2,6 +2,7 @@ package sisibibi.wanttogram.follow.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sisibibi.wanttogram.follow.dto.FollowResponseDto;
 import sisibibi.wanttogram.follow.dto.FollowerMemberResponseDto;
 import sisibibi.wanttogram.follow.dto.FollowingMemberResponseDto;
@@ -39,5 +40,16 @@ public class FollowService {
         FollowingMemberResponseDto followingMemberResponseDto = new FollowingMemberResponseDto(savedFollow.getFollowing().getId(), savedFollow.getFollowing().getName(), savedFollow.getFollowing().getEmail());
 
         return new FollowResponseDto(savedFollow.getId(), followerMemberResponseDto, followingMemberResponseDto);
+    }
+
+    // 팔로우 삭제
+    @Transactional
+    public void delete(Long member_id, Long id) {
+
+        FollowEntity foundFollow = followRepository.findByIdOrElseThrow(id);
+
+        if (foundFollow.getFollower().getId() == member_id) {
+            followRepository.delete(foundFollow);
+        }
     }
 }
