@@ -1,7 +1,5 @@
 package sisibibi.wanttogram.member.entity;
 
-import static lombok.AccessLevel.PRIVATE;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -16,6 +14,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import sisibibi.wanttogram.member.dto.MemberUpdate;
 
 @Entity
 @Table(name = "member")
@@ -53,5 +52,17 @@ public class MemberEntity {
 		this.name = name;
 		this.email = email;
 		this.password = password;
+	}
+
+	public MemberEntity update(MemberUpdate memberUpdate) {
+		return new MemberEntity(
+			id,
+			memberUpdate.getUserName(),
+			memberUpdate.getEmail(),
+			password,
+			createdAt,
+			LocalDateTime.now(),
+			deleteAt
+		);
 	}
 }
