@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sisibibi.wanttogram.follow.dto.FollowListResponseDto;
+import sisibibi.wanttogram.follow.dto.FollowRequestDto;
 import sisibibi.wanttogram.follow.dto.FollowResponseDto;
 import sisibibi.wanttogram.follow.service.FollowService;
 
@@ -26,10 +27,10 @@ public class FollowController {
     @PostMapping("/{member_id}/follows")
     public ResponseEntity<FollowResponseDto> saveFollow(
             @PathVariable Long member_id,
-            @RequestParam Long following_id
-    ) {
+            @RequestBody FollowRequestDto requestDto
+            ) {
 
-        FollowResponseDto savedFollow = followService.save(member_id, following_id);
+        FollowResponseDto savedFollow = followService.save(member_id, requestDto);
 
         return new ResponseEntity<>(savedFollow, HttpStatus.CREATED);
     }

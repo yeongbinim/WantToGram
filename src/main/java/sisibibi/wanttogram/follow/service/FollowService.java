@@ -1,14 +1,9 @@
 package sisibibi.wanttogram.follow.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
-import sisibibi.wanttogram.follow.dto.FollowListResponseDto;
-import sisibibi.wanttogram.follow.dto.FollowResponseDto;
-import sisibibi.wanttogram.follow.dto.FollowerMemberResponseDto;
-import sisibibi.wanttogram.follow.dto.FollowingMemberResponseDto;
+import sisibibi.wanttogram.follow.dto.*;
 import sisibibi.wanttogram.follow.entity.FollowEntity;
 import sisibibi.wanttogram.follow.infrastructure.FollowRepository;
 import sisibibi.wanttogram.member.entity.MemberEntity;
@@ -28,10 +23,10 @@ public class FollowService {
 
     // 기능
     // 팔로우 추가
-    public FollowResponseDto save(Long member_id, Long following_id) {
+    public FollowResponseDto save(Long member_id, FollowRequestDto requestDto) {
 
         MemberEntity follower = memberRepository.findByIdOrElseThrow(member_id);
-        MemberEntity following = memberRepository.findByIdOrElseThrow(following_id);
+        MemberEntity following = memberRepository.findByIdOrElseThrow(requestDto.getFollowing_id());
 
         FollowEntity follow = new FollowEntity();
         follow.setFollower(follower);
@@ -49,10 +44,6 @@ public class FollowService {
     public List<FollowListResponseDto> findAllById(Long following_id) {
 
         List<FollowEntity> followEntityList = followRepository.findByFollowingId(following_id);
-
-        if (followEntityList.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 id의 팔로잉 멤버가 없습니다.");
-        }
 
         return followEntityList.stream()
                 .map(FollowListResponseDto::followDto)
