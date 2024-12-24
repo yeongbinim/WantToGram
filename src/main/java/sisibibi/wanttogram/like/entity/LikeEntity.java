@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import sisibibi.wanttogram.member.entity.MemberEntity;
 
 @Entity
-@Table(name = "like")
+@Table(name = "likes")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -18,8 +18,8 @@ public class LikeEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "member_id", referencedColumnName = "id", nullable = false)
-    private MemberEntity memberId;
+    @JoinColumn(name = "member_id", nullable = false)
+    private MemberEntity member;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "entity_type", nullable = false)
@@ -32,8 +32,8 @@ public class LikeEntity {
         FEED, COMMENT
     }
 
-    public LikeEntity(MemberEntity memberId, EntityType entityType, Long entityId) {
-        this.memberId = memberId;
+    public LikeEntity(MemberEntity member, EntityType entityType, Long entityId) {
+        this.member = member;
         this.entityType = entityType;
         this.entityId = entityId;
     }

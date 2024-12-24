@@ -13,13 +13,24 @@ public class LikeController {
     private final LikeService likeService;
 
     @GetMapping("/{id}/likes")
-    public ResponseEntity<Void> feedLike (@PathVariable long feedId){
+    public ResponseEntity<Void> feedLike (@PathVariable Long feedId){
         likeService.feedlike(feedId);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
     @DeleteMapping("/{id}/likes")
-    public ResponseEntity<Void> feedUnLike (@PathVariable long feedId){
+    public ResponseEntity<Void> feedUnLike (@PathVariable Long feedId){
         likeService.feedUnlike(feedId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/comments/{comments_id}/likes")
+    public ResponseEntity<Void> commentLike (@PathVariable Long comments_id){
+        likeService.commentLike(comments_id);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+    @DeleteMapping("/comments/{comments_id}/likes")
+    public ResponseEntity<Void> commentUnLike (@PathVariable Long comments_id){
+        likeService.commentUnLike(comments_id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
