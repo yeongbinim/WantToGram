@@ -11,6 +11,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -23,8 +24,10 @@ import sisibibi.wanttogram.member.entity.MemberEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
+@Getter
 public class CommentEntity {
 
+	// 속성
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -51,4 +54,11 @@ public class CommentEntity {
 	@LastModifiedDate
 	@Column(name = "updated_at")
 	private LocalDateTime updatedAt;
+
+	// 생성자
+
+	// 기능
+	public void updateComment(String content) {
+		this.content = content;
+	}
 }
