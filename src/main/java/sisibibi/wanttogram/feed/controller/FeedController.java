@@ -22,7 +22,7 @@ public class FeedController {
     public ResponseEntity<FeedResponseDto> createFeed(@RequestBody FeedRequestDto request) {
 
         FeedEntity feed = feedService.createFeed(request);
-        FeedResponseDto feedResponseDto = new FeedResponseDto(feed.getWriter().getName(), feed.getTitle(), feed.getContent(), feed.getCreatedAt(), feed.getUpdatedAt());
+        FeedResponseDto feedResponseDto = new FeedResponseDto(feed.getId(), feed.getWriter().getName(), feed.getTitle(), feed.getContent(), feed.getCreatedAt(), feed.getUpdatedAt());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(feedResponseDto);
     }
@@ -44,7 +44,7 @@ public class FeedController {
     @PutMapping("/{id}")
     public ResponseEntity<FeedResponseDto> updateFeed(@PathVariable Long id, @RequestBody FeedRequestDto request) {
         FeedEntity feed = feedService.updateFeed(id, request);
-        FeedResponseDto feedResponseDto = new FeedResponseDto(feed.getWriter().getName(), feed.getTitle(), feed.getContent(), feed.getCreatedAt(), feed.getUpdatedAt());
+        FeedResponseDto feedResponseDto = new FeedResponseDto(feed.getId(), feed.getWriter().getName(), feed.getTitle(), feed.getContent(), feed.getCreatedAt(), feed.getUpdatedAt());
 
         return new ResponseEntity<>(feedResponseDto, HttpStatus.OK);
     }

@@ -44,7 +44,7 @@ public class FeedService {
         List<FeedEntity> feedList = feedRepository.findAll();
 
         List<FeedResponseDto> dtoList = feedList.stream()
-                .map(feedEntity -> new FeedResponseDto(feedEntity.getWriter().getName(), feedEntity.getTitle(), feedEntity.getContent(), feedEntity.getCreatedAt(), feedEntity.getUpdatedAt()))
+                .map(feedEntity -> new FeedResponseDto(feedEntity.getId(), feedEntity.getWriter().getName(), feedEntity.getTitle(), feedEntity.getContent(), feedEntity.getCreatedAt(), feedEntity.getUpdatedAt()))
                 .toList();
         return dtoList;
     }
@@ -52,7 +52,7 @@ public class FeedService {
     // 피드 단일 조회
     public FeedResponseDto findFeedById(Long id) {
         FeedEntity feed = feedRepository.findFeedByIdOrElseThrowById(id);
-        return new FeedResponseDto(feed.getWriter().getName(), feed.getTitle(), feed.getContent(), feed.getCreatedAt(), feed.getUpdatedAt());
+        return new FeedResponseDto(feed.getId(), feed.getWriter().getName(), feed.getTitle(), feed.getContent(), feed.getCreatedAt(), feed.getUpdatedAt());
     }
 
 

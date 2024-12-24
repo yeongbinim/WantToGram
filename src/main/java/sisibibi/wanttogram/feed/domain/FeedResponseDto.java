@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class FeedResponseDto {
 
+    private Long id;
     private String userName;
     private String title;
     private String content;
