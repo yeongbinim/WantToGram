@@ -3,6 +3,8 @@ package sisibibi.wanttogram.feed.service;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
@@ -38,14 +40,13 @@ public class FeedService {
 
     }
 
-    // 피드 페이징 조회 (전제 조회 까지 구현)
+    // 피드 페이징 조회
     @Transactional(readOnly = true)
-    public List<FeedResponseDto> findAllFeed() {
-        List<FeedEntity> feedList = feedRepository.findAll();
+    public Page<FeedResponseDto> findAllFeed(Pageable pageable) {
+        Page<FeedEntity> feedList = feedRepository.findAll(pageable);
 
-        List<FeedResponseDto> dtoList = feedList.stream()
-                .map(feedEntity -> new FeedResponseDto(feedEntity.getId(), feedEntity.getWriter().getName(), feedEntity.getTitle(), feedEntity.getContent(), feedEntity.getCreatedAt(), feedEntity.getUpdatedAt()))
-                .toList();
+        Page<FeedResponseDto> dtoList = feedList
+                .map(feedEntity -> new FeedResponseDto(feedEntity.getId(), feedEntity.getWriter().getName(), feedEntity.getTitle(), feedEntity.getContent(), feedEntity.getCreatedAt(), feedEntity.getUpdatedAt()));
         return dtoList;
     }
 

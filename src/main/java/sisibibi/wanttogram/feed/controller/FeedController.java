@@ -1,6 +1,10 @@
 package sisibibi.wanttogram.feed.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,9 +31,9 @@ public class FeedController {
         return ResponseEntity.status(HttpStatus.CREATED).body(feedResponseDto);
     }
 
-    @GetMapping // 피드 전체 조회 -> 페이징 조회 수정 예정
-    public ResponseEntity<List<FeedResponseDto>> findAllFeed() {
-        List<FeedResponseDto> feedResponseDtosList = feedService.findAllFeed();
+    @GetMapping // 피드 페이징 조회
+    public ResponseEntity<Page<FeedResponseDto>> findAllFeed(@PageableDefault(size = 10, sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<FeedResponseDto> feedResponseDtosList = feedService.findAllFeed(pageable);
         return new ResponseEntity<>(feedResponseDtosList, HttpStatus.OK);
     }
 
