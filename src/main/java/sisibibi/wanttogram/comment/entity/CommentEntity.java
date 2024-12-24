@@ -62,9 +62,6 @@ public class CommentEntity {
 		this.content = content;
 	}
 
-	// 생성자
-
-	// 기능
 	public void updateComment(String content) {
 		this.content = content;
 	}

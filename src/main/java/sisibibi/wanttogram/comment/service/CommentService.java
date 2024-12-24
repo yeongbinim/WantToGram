@@ -6,19 +6,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-import sisibibi.wanttogram.comment.dto.CommentRequest;
+import sisibibi.wanttogram.comment.dto.CommentCreateRequest;
 import sisibibi.wanttogram.comment.dto.CommentResponse;
-import sisibibi.wanttogram.comment.entity.CommentEntity;
 import sisibibi.wanttogram.comment.dto.UpdateCommentRequest;
+import sisibibi.wanttogram.comment.entity.CommentEntity;
 import sisibibi.wanttogram.comment.repository.CommentRepository;
+import sisibibi.wanttogram.common.PasswordEncoder;
 import sisibibi.wanttogram.common.exception.NotFoundException;
 import sisibibi.wanttogram.feed.entity.FeedEntity;
 import sisibibi.wanttogram.feed.repository.FeedRepository;
 import sisibibi.wanttogram.member.entity.MemberEntity;
 import sisibibi.wanttogram.member.infrastructure.MemberRepository;
-import sisibibi.wanttogram.common.PasswordEncoder;
 
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +32,7 @@ public class CommentService {
 	public CommentEntity createComment(
 		String userEmail,
 		Long feedId,
-		CommentRequest commentCreate,
+		CommentCreateRequest commentCreate,
 		Long parentId
 	) {
 		MemberEntity member = memberRepository.findByEmail(userEmail)
@@ -57,15 +56,11 @@ public class CommentService {
 		return CommentResponse.from(comments);
 	}
 
-
-	// 생성자
-
-	// 기능
-	// 댓글 수정
-	@Transactional
+	// 댓글 수정 :: TODO 사용자 찾아서 일치해야 댓글 수정 가능
 	public CommentEntity updateComment(Long id, String password, UpdateCommentRequest request) {
 
-		CommentEntity foundComment = commentRepository.findByCommentId(id);
+		CommentEntity foundComment = commentRepository.findById(id)
+			.orElseThrow(() -> new NotFoundException("comment", id));
 
 		if (passwordEncoder.matches(password, foundComment.getMember().getPassword())) {
 			foundComment.updateComment(request.getContent());
@@ -74,11 +69,11 @@ public class CommentService {
 		return foundComment;
 	}
 
-	// 댓글 삭제
-	@Transactional
+	// 댓글 삭제 :: TODO 사용자 찾아서 일치해야 댓글 삭제 가능
 	public void deleteComment(Long id, String password) {
 
-		CommentEntity foundComment = commentRepository.findByCommentId(id);
+		CommentEntity foundComment = commentRepository.findById(id)
+			.orElseThrow(() -> new NotFoundException("comment", id));
 
 		if (passwordEncoder.matches(password, foundComment.getMember().getPassword())) {
 			commentRepository.delete(foundComment);

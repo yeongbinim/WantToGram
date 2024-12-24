@@ -16,15 +16,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttribute;
-import sisibibi.wanttogram.comment.dto.CommentRequest;
-import org.springframework.web.bind.annotation.*;
+import sisibibi.wanttogram.comment.dto.CommentCreateRequest;
 import sisibibi.wanttogram.comment.dto.CommentResponse;
-import sisibibi.wanttogram.comment.entity.CommentEntity;
 import sisibibi.wanttogram.comment.dto.OneCommentResponse;
 import sisibibi.wanttogram.comment.dto.UpdateCommentRequest;
 import sisibibi.wanttogram.comment.entity.CommentEntity;
 import sisibibi.wanttogram.comment.service.CommentService;
-import sisibibi.wanttogram.common.PasswordEncoder;
 
 @RequiredArgsConstructor
 @RestController
@@ -38,7 +35,7 @@ public class CommentController {
 		@SessionAttribute String userEmail,
 		@PathVariable("feed_id") Long feedId,
 		@RequestParam(required = false) Long parentId,
-		@Valid @RequestBody CommentRequest commentCreate
+		@Valid @RequestBody CommentCreateRequest commentCreate
 	) {
 		CommentEntity comment = commentService.createComment(
 			userEmail,
@@ -61,20 +58,20 @@ public class CommentController {
 	// ::: 댓글 수정 API
 	@PutMapping("/{id}")
 	public ResponseEntity<OneCommentResponse> updateComment(
-			@PathVariable("feed_id") Long feedId,
-			@PathVariable("id") Long commentId,
-			@RequestParam String password,
-			@RequestBody UpdateCommentRequest request
+		@PathVariable("feed_id") Long feedId,
+		@PathVariable("id") Long commentId,
+		@RequestParam String password,
+		@RequestBody UpdateCommentRequest request
 	) {
 
 		CommentEntity updateComment = commentService.updateComment(commentId, password, request);
 
 		OneCommentResponse oneCommentResponse = new OneCommentResponse(
-				updateComment.getId(),
-				updateComment.getContent(),
-				updateComment.getMember().getName(),
-				updateComment.getCreatedAt(),
-				updateComment.getUpdatedAt()
+			updateComment.getId(),
+			updateComment.getContent(),
+			updateComment.getMember().getName(),
+			updateComment.getCreatedAt(),
+			updateComment.getUpdatedAt()
 		);
 
 		return new ResponseEntity<>(oneCommentResponse, HttpStatus.OK);
