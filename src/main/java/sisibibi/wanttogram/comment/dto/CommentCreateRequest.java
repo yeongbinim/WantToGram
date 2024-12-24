@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class CommentRequest {
+public class CommentCreateRequest {
 
 	@NotBlank(message = "Content cannot be blank.")
 	@Size(max = 100, message = "Content must be 100 characters or fewer.")

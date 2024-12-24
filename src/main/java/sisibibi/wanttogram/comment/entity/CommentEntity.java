@@ -19,15 +19,14 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import sisibibi.wanttogram.feed.entity.FeedEntity;
 import sisibibi.wanttogram.member.entity.MemberEntity;
 
+@Getter
 @Entity
 @Table(name = "comment")
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@Getter
 public class CommentEntity {
 
-	// 속성
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -55,9 +54,14 @@ public class CommentEntity {
 	@Column(name = "updated_at")
 	private LocalDateTime updatedAt;
 
-	// 생성자
+	public CommentEntity(MemberEntity member, FeedEntity feed, CommentEntity parent,
+		String content) {
+		this.member = member;
+		this.feed = feed;
+		this.parent = parent;
+		this.content = content;
+	}
 
-	// 기능
 	public void updateComment(String content) {
 		this.content = content;
 	}
