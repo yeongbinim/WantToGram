@@ -1,11 +1,25 @@
 package sisibibi.wanttogram.comment.controller;
 
+import jakarta.validation.Valid;
+import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttribute;
+import sisibibi.wanttogram.comment.dto.CommentRequest;
 import org.springframework.web.bind.annotation.*;
 import sisibibi.wanttogram.comment.dto.CommentResponse;
+import sisibibi.wanttogram.comment.entity.CommentEntity;
 import sisibibi.wanttogram.comment.dto.OneCommentResponse;
 import sisibibi.wanttogram.comment.dto.UpdateCommentRequest;
 import sisibibi.wanttogram.comment.entity.CommentEntity;
@@ -17,24 +31,31 @@ import sisibibi.wanttogram.common.PasswordEncoder;
 @RequestMapping("/feeds/{feed_id}/comments")
 public class CommentController {
 
-	// 속성
 	private final CommentService commentService;
 
-	// 생성자
-
-	// 기능
 	@PostMapping
 	public ResponseEntity<Void> createComment(
-		@PathVariable("feed_id") Long feedId
+		@SessionAttribute String userEmail,
+		@PathVariable("feed_id") Long feedId,
+		@RequestParam(required = false) Long parentId,
+		@Valid @RequestBody CommentRequest commentCreate
 	) {
-		return null;
+		CommentEntity comment = commentService.createComment(
+			userEmail,
+			feedId,
+			commentCreate,
+			parentId);
+		return ResponseEntity
+			.created(URI.create("/feeds/" + feedId + "/comments/" + comment.getId()))
+			.build();
 	}
 
 	@GetMapping
 	public ResponseEntity<List<CommentResponse>> getComments(
 		@PathVariable("feed_id") Long feedId
 	) {
-		return null;
+		List<CommentResponse> comments = commentService.getAllComments(feedId);
+		return ResponseEntity.ok(comments);
 	}
 
 	// ::: 댓글 수정 API
