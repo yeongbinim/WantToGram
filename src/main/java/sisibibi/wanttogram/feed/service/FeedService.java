@@ -48,7 +48,17 @@ public class FeedService {
         LocalDateTime start = (startDate == null) ? LocalDateTime.MIN : LocalDate.parse(startDate).atStartOfDay();
         LocalDateTime end = (endDate == null) ? LocalDateTime.MAX : LocalDate.parse(endDate).atTime(23, 59, 59);
 
-        Page<FeedEntity> feedList = feedRepository.findAllByUpdatedAtBetween(start, end, pageable);
+        Page<FeedEntity> feedList = null;
+        MemberEntity member = memberRepository.findByEmail((String) session.getAttribute("userEmail"))
+                .orElse(null);
+
+        if (member.getId() != null) {
+            feedList = feedRepository.findAllFeedsByFollowing(member.getId(), pageable);
+            System.out.println(feedList.stream().count());
+        } else {
+            feedList = feedRepository.findAllByUpdatedAtBetween(start, end, pageable);
+
+        }
 
         Page<FeedResponseDto> dtoList = feedList
                 .map(feedEntity -> new FeedResponseDto(feedEntity.getId(), feedEntity.getWriter().getName(),
