@@ -19,6 +19,8 @@ import sisibibi.wanttogram.feed.repository.FeedRepository;
 import sisibibi.wanttogram.member.entity.MemberEntity;
 import sisibibi.wanttogram.member.infrastructure.MemberRepository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,18 +44,24 @@ public class FeedService {
 
     // 피드 페이징 조회
     @Transactional(readOnly = true)
-    public Page<FeedResponseDto> findAllFeed(Pageable pageable) {
-        Page<FeedEntity> feedList = feedRepository.findAll(pageable);
+    public Page<FeedResponseDto> findAllFeed(String startDate, String endDate, Pageable pageable) {
+        LocalDateTime start = (startDate == null) ? LocalDateTime.MIN : LocalDate.parse(startDate).atStartOfDay();
+        LocalDateTime end = (endDate == null) ? LocalDateTime.MAX : LocalDate.parse(endDate).atTime(23, 59, 59);
+
+        Page<FeedEntity> feedList = feedRepository.findAllByUpdatedAtBetween(start, end, pageable);
 
         Page<FeedResponseDto> dtoList = feedList
-                .map(feedEntity -> new FeedResponseDto(feedEntity.getId(), feedEntity.getWriter().getName(), feedEntity.getTitle(), feedEntity.getContent(), feedEntity.getCreatedAt(), feedEntity.getUpdatedAt()));
+                .map(feedEntity -> new FeedResponseDto(feedEntity.getId(), feedEntity.getWriter().getName(),
+                        feedEntity.getTitle(), feedEntity.getContent(), feedEntity.getCreatedAt(),
+                        feedEntity.getUpdatedAt()));
         return dtoList;
     }
 
     // 피드 단일 조회
     public FeedResponseDto findFeedById(Long id) {
         FeedEntity feed = feedRepository.findFeedByIdOrElseThrowById(id);
-        return new FeedResponseDto(feed.getId(), feed.getWriter().getName(), feed.getTitle(), feed.getContent(), feed.getCreatedAt(), feed.getUpdatedAt());
+        return new FeedResponseDto(feed.getId(), feed.getWriter().getName(), feed.getTitle(), feed.getContent(),
+                feed.getCreatedAt(), feed.getUpdatedAt());
     }
 
 
