@@ -3,9 +3,12 @@ package sisibibi.wanttogram.follow.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sisibibi.wanttogram.common.exception.AlreadyExistsException;
+import sisibibi.wanttogram.common.exception.AlreadyFollowException;
 import sisibibi.wanttogram.follow.dto.*;
 import sisibibi.wanttogram.follow.entity.FollowEntity;
 import sisibibi.wanttogram.follow.infrastructure.FollowRepository;
+import sisibibi.wanttogram.like.entity.LikeEntity;
 import sisibibi.wanttogram.member.entity.MemberEntity;
 import sisibibi.wanttogram.member.infrastructure.MemberRepository;
 
@@ -28,6 +31,8 @@ public class FollowService {
         MemberEntity follower = memberRepository.findByIdOrElseThrow(member_id);
         MemberEntity following = memberRepository.findByIdOrElseThrow(requestDto.getFollowing_id());
 
+        alreadyFollowedCheck(member_id, requestDto.getFollowing_id());
+
         FollowEntity follow = new FollowEntity();
         follow.setFollower(follower);
         follow.setFollowing(following);
@@ -40,13 +45,22 @@ public class FollowService {
         return new FollowResponseDto(savedFollow.getId(), followerMemberResponseDto, followingMemberResponseDto);
     }
 
-    // 특정 멤버의 팔로우 전체 조회
-    public List<FollowListResponseDto> findAllById(Long following_id) {
+    // 특정 멤버의 팔로잉 전체 조회
+    public List<FollowingListResponseDto> findAllByFollowingId(Long following_id) {
 
         List<FollowEntity> followEntityList = followRepository.findByFollowingId(following_id);
 
         return followEntityList.stream()
-                .map(FollowListResponseDto::followDto)
+                .map(FollowingListResponseDto::followDto)
+                .toList();
+    }
+
+    // 팔로워 전체 조회
+    public List<FollowerListResponseDto> findAllByFollowerId(Long follower_id) {
+        List<FollowEntity> followEntityList = followRepository.findByFollowerId(follower_id);
+
+        return followEntityList.stream()
+                .map(FollowerListResponseDto::followDto)
                 .toList();
     }
 
@@ -58,6 +72,13 @@ public class FollowService {
 
         if (foundFollow.getFollower().getId().equals(member_id)) {
             followRepository.delete(foundFollow);
+        }
+    }
+
+    public void alreadyFollowedCheck(Long follower_id, Long following_id) {
+        boolean alreadyFollowedCheck = followRepository.existsByFollowerIdAndFollowingId(follower_id, following_id);
+        if (alreadyFollowedCheck) {
+            throw new AlreadyFollowException();
         }
     }
 }
