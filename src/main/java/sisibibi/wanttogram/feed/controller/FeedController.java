@@ -26,14 +26,18 @@ public class FeedController {
     public ResponseEntity<FeedResponseDto> createFeed(@RequestBody FeedRequestDto request) {
 
         FeedEntity feed = feedService.createFeed(request);
-        FeedResponseDto feedResponseDto = new FeedResponseDto(feed.getId(), feed.getWriter().getName(), feed.getTitle(), feed.getContent(), feed.getCreatedAt(), feed.getUpdatedAt());
+        FeedResponseDto feedResponseDto = new FeedResponseDto(feed.getId(), feed.getWriter().getName(),
+                feed.getTitle(), feed.getContent(), feed.getCreatedAt(), feed.getUpdatedAt());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(feedResponseDto);
     }
 
     @GetMapping // 피드 페이징 조회
-    public ResponseEntity<Page<FeedResponseDto>> findAllFeed(@PageableDefault(size = 10, sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<FeedResponseDto> feedResponseDtosList = feedService.findAllFeed(pageable);
+    public ResponseEntity<Page<FeedResponseDto>> findAllFeed(
+            @PageableDefault(size = 10, sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate) {
+        Page<FeedResponseDto> feedResponseDtosList = feedService.findAllFeed(startDate, endDate, pageable);
         return new ResponseEntity<>(feedResponseDtosList, HttpStatus.OK);
     }
 
@@ -48,7 +52,8 @@ public class FeedController {
     @PutMapping("/{id}")
     public ResponseEntity<FeedResponseDto> updateFeed(@PathVariable Long id, @RequestBody FeedRequestDto request) {
         FeedEntity feed = feedService.updateFeed(id, request);
-        FeedResponseDto feedResponseDto = new FeedResponseDto(feed.getId(), feed.getWriter().getName(), feed.getTitle(), feed.getContent(), feed.getCreatedAt(), feed.getUpdatedAt());
+        FeedResponseDto feedResponseDto = new FeedResponseDto(feed.getId(), feed.getWriter().getName(),
+                feed.getTitle(), feed.getContent(), feed.getCreatedAt(), feed.getUpdatedAt());
 
         return new ResponseEntity<>(feedResponseDto, HttpStatus.OK);
     }
