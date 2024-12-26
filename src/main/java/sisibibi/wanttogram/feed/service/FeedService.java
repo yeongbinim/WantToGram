@@ -52,7 +52,7 @@ public class FeedService {
         MemberEntity member = memberRepository.findByEmail((String) session.getAttribute("userEmail"))
                 .orElse(null);
 
-        if (member.getId() != null) {
+        if (member!= null) {
             feedList = feedRepository.findAllFeedsByFollowing(member.getId(), pageable);
             System.out.println(feedList.stream().count());
         } else {
