@@ -1,6 +1,8 @@
 package sisibibi.wanttogram.comment.service;
 
 import java.util.List;
+
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import sisibibi.wanttogram.comment.entity.CommentEntity;
 import sisibibi.wanttogram.comment.repository.CommentRepository;
 import sisibibi.wanttogram.common.PasswordEncoder;
 import sisibibi.wanttogram.common.exception.NotFoundException;
+import sisibibi.wanttogram.common.exception.UnauthorizedException;
 import sisibibi.wanttogram.feed.entity.FeedEntity;
 import sisibibi.wanttogram.feed.repository.FeedRepository;
 import sisibibi.wanttogram.member.entity.MemberEntity;
@@ -28,6 +31,16 @@ public class CommentService {
 	private final MemberRepository memberRepository;
 	private final FeedRepository feedRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final HttpSession session;
+
+	private void ownerCheck(CommentEntity comment,String message) {
+		String userEmail = (String) session.getAttribute("userEmail");
+		MemberEntity member = memberRepository.findByEmail(userEmail)
+				.orElseThrow(() -> new NotFoundException("멤버", userEmail));
+		if (!comment.getMember().getEmail().equals(member.getEmail())) {
+			throw new UnauthorizedException(message);
+		}
+	}
 
 	public CommentEntity createComment(
 		String userEmail,
@@ -57,12 +70,13 @@ public class CommentService {
 	}
 
 	// 댓글 수정 :: TODO 사용자 찾아서 일치해야 댓글 수정 가능
-	public CommentEntity updateComment(Long id, String password, UpdateCommentRequest request) {
+	public CommentEntity updateComment(Long id, UpdateCommentRequest request) {
 
 		CommentEntity foundComment = commentRepository.findById(id)
 			.orElseThrow(() -> new NotFoundException("comment", id));
 
-		if (passwordEncoder.matches(password, foundComment.getMember().getPassword())) {
+		if (passwordEncoder.matches(request.getPassword(), foundComment.getMember().getPassword())) {
+			ownerCheck(foundComment, "본인이 작성한 댓글만 수정 가능합니다");
 			foundComment.updateComment(request.getContent());
 		}
 
@@ -76,6 +90,7 @@ public class CommentService {
 			.orElseThrow(() -> new NotFoundException("comment", id));
 
 		if (passwordEncoder.matches(password, foundComment.getMember().getPassword())) {
+			ownerCheck(foundComment, "본인이 작성한 댓글만 삭제 가능합니다");
 			commentRepository.delete(foundComment);
 		}
 	}

@@ -12,12 +12,12 @@ import sisibibi.wanttogram.like.service.LikeService;
 public class LikeController {
     private final LikeService likeService;
 
-    @GetMapping("/{id}/likes")
+    @GetMapping("/{feedId}/likes")
     public ResponseEntity<Void> feedLike (@PathVariable Long feedId){
         likeService.feedlike(feedId);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
-    @DeleteMapping("/{id}/likes")
+    @DeleteMapping("/{feedId}/likes")
     public ResponseEntity<Void> feedUnLike (@PathVariable Long feedId){
         likeService.feedUnlike(feedId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

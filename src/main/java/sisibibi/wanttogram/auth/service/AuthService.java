@@ -52,6 +52,10 @@ public class AuthService {
                 .orElseThrow(UnauthorizedException::new);
 
         member.setDeleteAt(LocalDateTime.now());
+        session.invalidate();
     }
 
+    public void logout() {
+        session.invalidate();
+    }
 }
