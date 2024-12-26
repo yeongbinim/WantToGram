@@ -44,13 +44,11 @@ public class FeedController {
 	@GetMapping // 피드 페이징 조회
 	public ResponseEntity<Page<FeedResponseDto>> findAllFeed(
 		@PageableDefault(size = 10, sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable,
-		@RequestParam(required = false) String startDate,
-		@RequestParam(required = false) String endDate) {
+		@RequestParam(required = false, defaultValue = "1990-01-01") String startDate,
+		@RequestParam(required = false, defaultValue = "2099-12-31") String endDate) {
 
-		LocalDateTime start = startDate == null ?
-			LocalDateTime.MIN : LocalDate.parse(startDate).atStartOfDay();
-		LocalDateTime end = endDate == null ?
-			LocalDateTime.MAX : LocalDate.parse(endDate).atTime(23, 59, 59);
+		LocalDateTime start = LocalDate.parse(startDate).atStartOfDay();
+		LocalDateTime end = LocalDate.parse(endDate).atTime(23, 59, 59);
 
 		Page<FeedResponseDto> feeds = feedService.findAllFeed(start, end, pageable)
 			.map(feedEntity ->
@@ -64,7 +62,7 @@ public class FeedController {
 				)
 			);
 
-		return new ResponseEntity<>(feeds, HttpStatus.OK);
+		return ResponseEntity.ok(feeds);
 	}
 
 	// 피드 단일 조회
