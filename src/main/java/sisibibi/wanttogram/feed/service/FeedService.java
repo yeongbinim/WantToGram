@@ -5,13 +5,8 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import sisibibi.wanttogram.feed.domain.FeedResponseDto;
 import sisibibi.wanttogram.feed.domain.FeedRequestDto;
 import sisibibi.wanttogram.feed.entity.FeedEntity;
@@ -21,8 +16,6 @@ import sisibibi.wanttogram.member.infrastructure.MemberRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Transactional
 @RequiredArgsConstructor
