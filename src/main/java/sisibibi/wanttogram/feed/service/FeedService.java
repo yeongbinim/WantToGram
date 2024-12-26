@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sisibibi.wanttogram.common.exception.NotFoundException;
+import sisibibi.wanttogram.common.exception.UnauthorizedException;
 import sisibibi.wanttogram.feed.domain.FeedResponseDto;
 import sisibibi.wanttogram.feed.domain.FeedRequestDto;
 import sisibibi.wanttogram.feed.entity.FeedEntity;
@@ -25,6 +27,15 @@ public class FeedService {
     private final FeedRepository feedRepository;
     private final HttpSession session;
     private final MemberRepository memberRepository;
+
+    private void ownerCheck(FeedEntity feed,String message) {
+        String userEmail = (String) session.getAttribute("userEmail");
+        MemberEntity member = memberRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new NotFoundException("멤버", userEmail));
+        if (!feed.getWriter().getEmail().equals(member.getEmail())) {
+            throw new UnauthorizedException(message);
+        }
+    }
 
 
     public FeedEntity createFeed(FeedRequestDto request) {
@@ -45,7 +56,7 @@ public class FeedService {
         MemberEntity member = memberRepository.findByEmail((String) session.getAttribute("userEmail"))
                 .orElse(null);
 
-        if (member!= null) {
+        if (member != null) {
             feedList = feedRepository.findAllFeedsByFollowing(member.getId(), pageable);
             System.out.println(feedList.stream().count());
         } else {
@@ -72,13 +83,17 @@ public class FeedService {
     public FeedEntity updateFeed(Long id, FeedRequestDto request) {
         FeedEntity feed = feedRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Feed not found"));
+        ownerCheck(feed,"본인의 피드만 수정 가능합니다.");
         feed.updateFeedDto(request);
         return feed;
     }
 
     // 피드 삭제
     public void deleteFeed(Long id) {
-        feedRepository.deleteById(id);
+        FeedEntity feed = feedRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Feed not found"));
+        ownerCheck(feed,"본인의 피드만 삭제 가능합니다.");
+        feedRepository.delete(feed);
     }
 }
 
