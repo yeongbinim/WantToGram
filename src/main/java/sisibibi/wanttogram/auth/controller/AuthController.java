@@ -26,6 +26,11 @@ public class AuthController {
 		service.login(memberLogin);
 		return ResponseEntity.ok().build();
 	}
+	@PostMapping("/logout")
+	public ResponseEntity<Void> logout() {
+		service.logout();
+		return ResponseEntity.ok().build();
+	}
 
 	@DeleteMapping("/resign")
 	public ResponseEntity<Void> resign(@Valid @RequestBody MemberResign memberResign){

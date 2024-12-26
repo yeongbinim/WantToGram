@@ -58,13 +58,11 @@ public class CommentController {
 	// ::: 댓글 수정 API
 	@PutMapping("/{id}")
 	public ResponseEntity<OneCommentResponse> updateComment(
-		@PathVariable("feed_id") Long feedId,
 		@PathVariable("id") Long commentId,
-		@RequestParam String password,
 		@RequestBody UpdateCommentRequest request
 	) {
 
-		CommentEntity updateComment = commentService.updateComment(commentId, password, request);
+		CommentEntity updateComment = commentService.updateComment(commentId, request);
 
 		OneCommentResponse oneCommentResponse = new OneCommentResponse(
 			updateComment.getId(),
@@ -79,12 +77,11 @@ public class CommentController {
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteComment(
-		@PathVariable("feed_id") Long feedId,
 		@PathVariable("id") Long commentId,
-		@RequestParam String password
+		@RequestBody UpdateCommentRequest request// {"password":"현재비밀번호" *DTO에는 2개의 필드만 있지만, password만 입력!
 	) {
 
-		commentService.deleteComment(commentId, password);
+		commentService.deleteComment(commentId, request.getPassword());
 
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
