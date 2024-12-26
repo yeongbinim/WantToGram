@@ -17,19 +17,38 @@ public interface FeedRepository extends JpaRepository<FeedEntity, Long> {
 			() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Feed not found"));
 	}
 
-	Page<FeedEntity> findAllByUpdatedAtBetween(LocalDateTime startDate, LocalDateTime endDate,
-		Pageable pageable);
-
+	// :: TODO 서비스 레이어에서 동적쿼리 생성하는거로 변경하는 점 고려하기 (아래와 상당부분 겹침)
 	@Query("""
 		SELECT f
 		FROM FeedEntity f
-		WHERE f.writer.id IN (
-		  SELECT fl.following.id
-		  FROM FollowEntity fl
-		  WHERE fl.follower.id = :userId)
-		OR f.writer.id = :userId
+		WHERE f.updatedAt BETWEEN :start AND :end
+		ORDER BY (
+				SELECT COUNT(l)
+				FROM LikeEntity l
+				WHERE l.entityType = 'FEED' AND l.entityId = f.id
+			) DESC, f.updatedAt DESC
 		""")
-	Page<FeedEntity> findAllFeedsByFollowing(@Param("userId") Long userId, Pageable pageable);
+	Page<FeedEntity> findAllOrderedByLikes(
+		@Param("start") LocalDateTime start,
+		@Param("end") LocalDateTime end,
+		Pageable pageable);
 
-
+	// :: TODO 성능테스트 해보면서 쿼리 개선하기 (likeCount 를 차라리.. 테이블이 갖고 있는게 낫지 않을까?)
+	@Query("""
+		SELECT f
+		FROM FeedEntity f
+		WHERE (f.writer.id IN (
+					SELECT fl.following.id
+					FROM FollowEntity fl
+					WHERE fl.follower.id = :userId
+				) OR f.writer.id = :userId
+			) AND f.updatedAt BETWEEN :start AND :end
+		ORDER BY (
+				SELECT COUNT(l)
+				FROM LikeEntity l
+				WHERE l.entityType = 'FEED' AND l.entityId = f.id
+			) DESC, f.updatedAt DESC
+		""")
+	Page<FeedEntity> findAllByFollowingOrderedByLikes(@Param("userId") Long userId,
+		@Param("start") LocalDateTime start, @Param("end") LocalDateTime end, Pageable pageable);
 }

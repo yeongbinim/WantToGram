@@ -1,8 +1,10 @@
 package sisibibi.wanttogram.feed.service;
 
 
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpSession;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,8 +44,8 @@ public class FeedService {
 			(String) session.getAttribute("userEmail")).orElse(null);
 
 		return member == null ?
-			feedRepository.findAllByUpdatedAtBetween(start, end, pageable)
-			: feedRepository.findAllFeedsByFollowing(member.getId(), pageable);
+			feedRepository.findAllOrderedByLikes(start, end, pageable)
+			: feedRepository.findAllByFollowingOrderedByLikes(member.getId(), start, end, pageable);
 	}
 
 	// 피드 단일 조회
@@ -66,6 +68,26 @@ public class FeedService {
 	// 피드 삭제
 	public void deleteFeed(Long id) {
 		feedRepository.deleteById(id);
+	}
+
+
+	// 앱 실행시 기본값 세팅
+	@PostConstruct
+	private void initFeeds() {
+		List<MemberEntity> members = memberRepository.findAll();
+		if (members.isEmpty()) {
+			// 멤버가 없으면 멤버를 생성
+			MemberEntity member = new MemberEntity("User", "user@example.com", "password@1");
+			members.add(memberRepository.save(member));
+		}
+		List<FeedEntity> feeds = feedRepository.findAll();
+		if (feeds.isEmpty()) {
+			// 피드가 없으면 피드 24개를 생성
+			for (int i = 0; i < 24; i++) {
+				FeedEntity feed = new FeedEntity(null, members.get(0), "제목", "내용", null, null);
+				feedRepository.save(feed);
+			}
+		}
 	}
 }
 
