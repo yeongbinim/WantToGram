@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sisibibi.wanttogram.follow.dto.FollowListResponseDto;
+import sisibibi.wanttogram.follow.dto.FollowerListResponseDto;
+import sisibibi.wanttogram.follow.dto.FollowingListResponseDto;
 import sisibibi.wanttogram.follow.dto.FollowRequestDto;
 import sisibibi.wanttogram.follow.dto.FollowResponseDto;
 import sisibibi.wanttogram.follow.service.FollowService;
@@ -36,12 +37,21 @@ public class FollowController {
     }
 
     // ::: 특정 멤버의 팔로우 전체 조회 API
-    @GetMapping("/{member_id}/follows")
-    public ResponseEntity<List<FollowListResponseDto>> findAllById(@PathVariable Long member_id) {
+    @GetMapping("/{member_id}/follows/followings")
+    public ResponseEntity<List<FollowingListResponseDto>> findAllByFollowingId(@PathVariable Long member_id) {
 
-        List<FollowListResponseDto> followListResponseDtoList = followService.findAllById(member_id);
+        List<FollowingListResponseDto> followingListResponseDtoList = followService.findAllByFollowingId(member_id);
 
-        return new ResponseEntity<>(followListResponseDtoList, HttpStatus.OK);
+        return new ResponseEntity<>(followingListResponseDtoList, HttpStatus.OK);
+    }
+
+    // ::: 팔로워 전체 조회 API
+    @GetMapping("/{member_id}/follows/followers")
+    public ResponseEntity<List<FollowerListResponseDto>> findAllByFollowerId(@PathVariable Long member_id) {
+
+        List<FollowerListResponseDto> followerListResponseDtoList = followService.findAllByFollowerId(member_id);
+
+        return new ResponseEntity<>(followerListResponseDtoList, HttpStatus.OK);
     }
 
     // ::: 팔로우 삭제 API
