@@ -7,10 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UpdateCommentRequest {
 
-    // 속성
     private final String content;
+    private final String password;
 
-    // 생성자
-
-    // 기능
 }
