@@ -16,6 +16,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import sisibibi.wanttogram.member.dto.MemberUpdate;
+import sisibibi.wanttogram.member.dto.UpdateMemberPasswordRequest;
 
 @Entity
 @Table(name = "member")
@@ -66,5 +67,9 @@ public class MemberEntity {
 			LocalDateTime.now(),
 			deleteAt
 		);
+	}
+
+	public void updatePassword(String password) {
+		this.password = password;
 	}
 }
