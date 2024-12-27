@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
+import sisibibi.wanttogram.feed.domain.FeedWithLikesDto;
 import sisibibi.wanttogram.feed.entity.FeedEntity;
 
 public interface FeedRepository extends JpaRepository<FeedEntity, Long> {
@@ -19,36 +20,49 @@ public interface FeedRepository extends JpaRepository<FeedEntity, Long> {
 
 	// :: TODO 서비스 레이어에서 동적쿼리 생성하는거로 변경하는 점 고려하기 (아래와 상당부분 겹침)
 	@Query("""
-		SELECT f
+		SELECT new sisibibi.wanttogram.feed.domain.FeedWithLikesDto(
+		    f.id,
+		    f.writer.name,
+		    f.title,
+		    f.content,
+		    f.createdAt,
+		    f.updatedAt,
+		    COUNT(l.id)
+		)
 		FROM FeedEntity f
-		WHERE f.updatedAt BETWEEN :start AND :end
-		ORDER BY (
-				SELECT COUNT(l)
-				FROM LikeEntity l
-				WHERE l.entityType = 'FEED' AND l.entityId = f.id
-			) DESC, f.updatedAt DESC
+		LEFT JOIN LikeEntity l ON l.entityType = 'FEED' AND l.entityId = f.id
+		GROUP BY f.id, f.writer.name, f.title, f.content, f.createdAt, f.updatedAt
+		ORDER BY COUNT(l.id) DESC, f.updatedAt DESC
 		""")
-	Page<FeedEntity> findAllOrderedByLikes(
+	Page<FeedWithLikesDto> findAllOrderedByLikes(
 		@Param("start") LocalDateTime start,
 		@Param("end") LocalDateTime end,
 		Pageable pageable);
 
-	// :: TODO 성능테스트 해보면서 쿼리 개선하기 (likeCount 를 차라리.. 테이블이 갖고 있는게 낫지 않을까?)
 	@Query("""
-		SELECT f
+		SELECT new sisibibi.wanttogram.feed.domain.FeedWithLikesDto(
+		    f.id,
+		    f.writer.name,
+		    f.title,
+		    f.content,
+		    f.createdAt,
+		    f.updatedAt,
+		    COUNT(l.id)
+		)
 		FROM FeedEntity f
+		LEFT JOIN LikeEntity l ON l.entityType = 'FEED' AND l.entityId = f.id
 		WHERE (f.writer.id IN (
-					SELECT fl.following.id
-					FROM FollowEntity fl
-					WHERE fl.follower.id = :userId
-				) OR f.writer.id = :userId
-			) AND f.updatedAt BETWEEN :start AND :end
-		ORDER BY (
-				SELECT COUNT(l)
-				FROM LikeEntity l
-				WHERE l.entityType = 'FEED' AND l.entityId = f.id
-			) DESC, f.updatedAt DESC
+		            SELECT fl.following.id
+		            FROM FollowEntity fl
+		            WHERE fl.follower.id = :userId
+		        ) OR f.writer.id = :userId)
+		AND f.updatedAt BETWEEN :start AND :end
+		GROUP BY f.id, f.writer.name, f.title, f.content, f.createdAt, f.updatedAt
+		ORDER BY COUNT(l.id) DESC, f.updatedAt DESC
 		""")
-	Page<FeedEntity> findAllByFollowingOrderedByLikes(@Param("userId") Long userId,
-		@Param("start") LocalDateTime start, @Param("end") LocalDateTime end, Pageable pageable);
+	Page<FeedWithLikesDto> findAllByFollowingOrderedByLikes(
+		@Param("userId") Long userId,
+		@Param("start") LocalDateTime start,
+		@Param("end") LocalDateTime end,
+		Pageable pageable);
 }

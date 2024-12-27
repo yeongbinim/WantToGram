@@ -4,7 +4,6 @@ package sisibibi.wanttogram.feed.service;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpSession;
 import java.time.LocalDateTime;
-import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,6 +14,7 @@ import sisibibi.wanttogram.common.exception.NotFoundException;
 import sisibibi.wanttogram.common.exception.UnauthorizedException;
 import sisibibi.wanttogram.feed.domain.FeedRequestDto;
 import sisibibi.wanttogram.feed.domain.FeedResponseDto;
+import sisibibi.wanttogram.feed.domain.FeedWithLikesDto;
 import sisibibi.wanttogram.feed.entity.FeedEntity;
 import sisibibi.wanttogram.feed.repository.FeedRepository;
 import sisibibi.wanttogram.member.entity.MemberEntity;
@@ -29,14 +29,14 @@ public class FeedService {
 	private final HttpSession session;
 	private final MemberRepository memberRepository;
 
-  private void ownerCheck(FeedEntity feed,String message) {
-    String userEmail = (String) session.getAttribute("userEmail");
-    MemberEntity member = memberRepository.findByEmail(userEmail)
-            .orElseThrow(() -> new NotFoundException("멤버", userEmail));
-    if (!feed.getWriter().getEmail().equals(member.getEmail())) {
-        throw new UnauthorizedException(message);
-    }
-  }
+	private void ownerCheck(FeedEntity feed, String message) {
+		String userEmail = (String) session.getAttribute("userEmail");
+		MemberEntity member = memberRepository.findByEmail(userEmail)
+			.orElseThrow(() -> new NotFoundException("멤버", userEmail));
+		if (!feed.getWriter().getEmail().equals(member.getEmail())) {
+			throw new UnauthorizedException(message);
+		}
+	}
 
 	public FeedEntity createFeed(FeedRequestDto request) {
 		MemberEntity member = memberRepository.findByEmail(
@@ -47,11 +47,12 @@ public class FeedService {
 		return feedRepository.save(feed);
 
 	}
- 
+
 
 	// 피드 페이징 조회
 	@Transactional(readOnly = true)
-	public Page<FeedEntity> findAllFeed(LocalDateTime start, LocalDateTime end, Pageable pageable) {
+	public Page<FeedWithLikesDto> findAllFeed(LocalDateTime start, LocalDateTime end,
+		Pageable pageable) {
 		MemberEntity member = memberRepository.findByEmail(
 			(String) session.getAttribute("userEmail")).orElse(null);
 
@@ -70,21 +71,21 @@ public class FeedService {
 
 
 	// 피드 업데이트
-  public FeedEntity updateFeed(Long id, FeedRequestDto request) {
-    FeedEntity feed = feedRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Feed not found"));
-    ownerCheck(feed,"본인의 피드만 수정 가능합니다.");
-    feed.updateFeedDto(request);
-    return feed;
-  }
+	public FeedEntity updateFeed(Long id, FeedRequestDto request) {
+		FeedEntity feed = feedRepository.findById(id)
+			.orElseThrow(() -> new RuntimeException("Feed not found"));
+		ownerCheck(feed, "본인의 피드만 수정 가능합니다.");
+		feed.updateFeedDto(request);
+		return feed;
+	}
 
-  // 피드 삭제
-  public void deleteFeed(Long id) {
-    FeedEntity feed = feedRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Feed not found"));
-    ownerCheck(feed,"본인의 피드만 삭제 가능합니다.");
-    feedRepository.delete(feed);
-  }
+	// 피드 삭제
+	public void deleteFeed(Long id) {
+		FeedEntity feed = feedRepository.findById(id)
+			.orElseThrow(() -> new RuntimeException("Feed not found"));
+		ownerCheck(feed, "본인의 피드만 삭제 가능합니다.");
+		feedRepository.delete(feed);
+	}
 
 	// 앱 실행시 기본값 세팅
 	@PostConstruct
@@ -92,16 +93,14 @@ public class FeedService {
 		List<MemberEntity> members = memberRepository.findAll();
 		if (members.isEmpty()) {
 			// 멤버가 없으면 멤버를 생성
-			MemberEntity member = new MemberEntity("User", "user@example.com", "password@1");
+			MemberEntity member = new MemberEntity("id1유저", "user1@example.com", "password@1");
 			members.add(memberRepository.save(member));
 		}
 		List<FeedEntity> feeds = feedRepository.findAll();
 		if (feeds.isEmpty()) {
-			// 피드가 없으면 피드 24개를 생성
-			for (int i = 0; i < 24; i++) {
-				FeedEntity feed = new FeedEntity(null, members.get(0), "제목", "내용", null, null);
-				feedRepository.save(feed);
-			}
+			// 피드가 없으면 피드를 생성
+			feedRepository.save(new FeedEntity(null, members.get(0), "제목1", "내용1", null, null));
+			feedRepository.save(new FeedEntity(null, members.get(0), "제목2", "내용2", null, null));
 		}
 	}
 }

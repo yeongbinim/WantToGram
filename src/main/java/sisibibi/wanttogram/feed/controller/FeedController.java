@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import sisibibi.wanttogram.feed.domain.FeedRequestDto;
 import sisibibi.wanttogram.feed.domain.FeedResponseDto;
+import sisibibi.wanttogram.feed.domain.FeedWithLikesDto;
 import sisibibi.wanttogram.feed.entity.FeedEntity;
 import sisibibi.wanttogram.feed.service.FeedService;
 
@@ -42,7 +43,7 @@ public class FeedController {
 	}
 
 	@GetMapping // 피드 페이징 조회
-	public ResponseEntity<Page<FeedResponseDto>> findAllFeed(
+	public ResponseEntity<Page<FeedWithLikesDto>> findAllFeed(
 		@PageableDefault(size = 10, sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable,
 		@RequestParam(required = false, defaultValue = "1990-01-01") String startDate,
 		@RequestParam(required = false, defaultValue = "2099-12-31") String endDate) {
@@ -50,17 +51,7 @@ public class FeedController {
 		LocalDateTime start = LocalDate.parse(startDate).atStartOfDay();
 		LocalDateTime end = LocalDate.parse(endDate).atTime(23, 59, 59);
 
-		Page<FeedResponseDto> feeds = feedService.findAllFeed(start, end, pageable)
-			.map(feedEntity ->
-				new FeedResponseDto(
-					feedEntity.getId(),
-					feedEntity.getWriter().getName(),
-					feedEntity.getTitle(),
-					feedEntity.getContent(),
-					feedEntity.getCreatedAt(),
-					feedEntity.getUpdatedAt()
-				)
-			);
+		Page<FeedWithLikesDto> feeds = feedService.findAllFeed(start, end, pageable);
 
 		return ResponseEntity.ok(feeds);
 	}
