@@ -10,17 +10,27 @@
   -  ⚠️ [트러블 슈팅](#trouble)
   -  😼 [후기](#review)
 
-  
+<br/>
+
 <a id="introduce"></a>
 ## 🫴 Introduce
 
-  **팀명**: 12조(십이조) → 시시비비(**是是非非**)  
-  **팀 소개**: 의미없이 딸깍 코드를 작성하지 않고 시시비비를 가리며 성장하는 팀.
-  
+- **팀명**: 12조(십이조) → 시시비비(**是是非非**)  
+- **팀 소개**: 의미없이 딸깍 코드를 작성하지 않고 시시비비를 가리며 성장하는 팀.
+
+[팀 노션 구경하러 가기](https://teamsparta.notion.site/2f3b7f96f0354d51b05d070ed1d571b9) 
+
+<br/>
+
 ### ⚙ 주요 기능
 - **게시글 작성**: 쉽고 빠르게 콘텐츠를 공유하세요.
 - **댓글 및 좋아요**: 친구들과 소통을 이어가세요.
 - **검색 기능**: 관심 있는 사람이나 게시글을 찾아보세요.
+
+[프로젝트 시연 영상 보러가기](https://youtu.be/VEFvjpI4MVc)
+
+
+<br/>
 
 ### 🏝 프로젝트 동기
 **WantToGram**은 소셜 미디어의 복잡함에서 벗어나, 사용자 중심의 간단하고 직관적인 서비스를 제공하기 위해 시작되었습니다.
@@ -28,14 +38,17 @@
 이 프로젝트는 Spring Data JPA를 사용하여 MySQL DB에 접근하며, 회원과 피드 및 댓글에 대한 CRUD (생성, 조회, 수정, 삭제),  
 회원 팔로우, 좋아요 표시 작업을 수행하는 RESTful API를 제공합니다.  
 
-**📅 프로젝트 기간**: 2024.12.20 ~ 2024.12.27  
-**기술 스택**:
-- Java 17  
-- Spring Boot 3.4.0  
-- Spring Data JPA  
-- MySQL 8.0
-- AWS E2C
-- 
+- **📅 프로젝트 기간**: 2024.12.20 ~ 2024.12.27  
+
+- **기술 스택**:
+  - Java 17  
+  - Spring Boot 3.4.0  
+  - Spring Data JPA  
+  - MySQL 8.0
+  - AWS E2C
+
+<br/>
+
 <a id="gitcon"></a>
 ### 🗃️ Git 컨벤션
 **feat** : 새로운 기능 추가  
@@ -53,33 +66,6 @@ feat: 검색 API 기능 추가
 - 현재 위치와 검색한 주소를 기준으로 거리 계산
 - 위,경도 값을 갖고 역지오코딩을 통해 주소값을 구함
 ```
-<a id="member"></a>
-## 👨‍👨‍👦‍👦 Member
-
-<table align="center">
-    <thead>
-        <tr>
-            <th>👑 팀장</th>
-            <th>팀원</th>
-            <th>팀원</th>
-            <th>팀원</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td align="center"><a href="https://github.com/yeongbinim"><img src="https://github.com/yeongbinim.png" width="100px;" alt=""/></a></td>
-            <td align="center"><a href="https://github.com/tmdcksdl"><img src="https://github.com/tmdcksdl.png" width="100px;" alt=""/></a></td>
-            <td align="center"><a href="https://github.com/answerin1"><img src="https://github.com/answerin1.png" width="100px;" alt=""/></a></td>
-            <td align="center"><a href="https://github.com/Hojin02"><img src="https://github.com/Hojin02.png" width="100px;" alt=""/></a></td>
-        </tr>
-        <tr>
-            <td align="center">임영빈</td>
-            <td align="center">이승찬</td>
-            <td align="center">김다빈</td>
-            <td align="center">김호진</td>
-        </tr>
-    </tbody>
-</table>
 
 <a id="erd"></a>
 ## 📊 ERD 설계
@@ -137,11 +123,15 @@ Feed ||--o{ Comment : " "
 
 ```
 
+<br/>
+
 <a id="api"></a>
 ## 🌐 Api 명세서
 회원(Member), 피드(Feed), 댓글(Comment), 팔로우(Follow), 좋아요(Like)와 관련된 RESTful API를 제공합니다.  
 각 기능에 대해 CRUD(생성, 조회, 수정, 삭제) 작업을 지원하며, JSON 형식의 요청과 응답을 기반으로 동작합니다.  
 [상세api확인을 위해 여기를 클릭해주세요](https://teamsparta.notion.site/1622dc3ef51481ca9bb0d64dd3f4d087?v=1622dc3ef51481a489b5000ce8b50033)
+
+<br/>
 
 <a id="trouble"></a>
 ## ⚠️ 트러블 슈팅
@@ -154,6 +144,8 @@ Feed ||--o{ Comment : " "
 
 ### 협업 과정에서의 트러블
 #### [💥 악 충돌이다..](https://teamsparta.notion.site/9fa180056dfe492cb5f364ee3a972a27)
+
+<br/>
 
 <a id="review"></a>
 ## 😼 후기
@@ -185,11 +177,10 @@ Feed ||--o{ Comment : " "
         <!-- 후기 -->
         <td>
             <p>
-                혼자 했던 과제를 팀원과 함께 하는 프로젝트라서 걱정이 많았다. 내가 못 따라가면 어쩌지 너무 어려우면 어쩌지 했지만, <br>
-                영빈님이 팀을 잘 이끌어 주셨고, 팀원 모두 말똥말똥하는 눈으로 집중하고 있었다! 덕분에 분위기도 너무 좋았고, <br>
-                힘들 때 서로 화이팅이라는 말 한마디와 가끔씩 농담도 주고받으며 힘을 얻어 개발할 수 있었다.<br>
-		다양한 상황에서 Git 해결 방법과, 내가 하던 방법 말고도 다른 스타일도 많이 배울 수 있었고, <br>
-                차근차근하다 보니 어렵지 않게 할 수 있었다! 우리 팀 최고!<br>
+                혼자 했던 과제를 팀원과 함께 하는 프로젝트라서 걱정이 많았다. <br/>
+		내가 못 따라가면 어쩌지 너무 어려우면 어쩌지 했지만, 영빈님이 팀을 잘 이끌어 주셨고, 팀원 모두 말똥말똥하는 눈으로 집중하고 있었다! <br>
+		덕분에 분위기도 너무 좋았고, 힘들 때 서로 화이팅이라는 말 한마디와 가끔씩 농담도 주고받으며 힘을 얻어 개발할 수 있었다. <br>
+		다양한 상황에서 Git 해결 방법과, 내가 하던 방법 말고도 다른 스타일도 많이 배울 수 있었고, 차근차근하다 보니 어렵지 않게 할 수 있었다! 우리 팀 최고!<br>
             </p>
         </td>
     </tr>
